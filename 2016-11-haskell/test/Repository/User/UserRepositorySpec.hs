@@ -1,8 +1,9 @@
-module Domain.User.UserSpec where
+module Repository.User.UserRepositorySpec where
 
 import Test.Hspec
 
-import Domain.User.User
+import Repository.User.UserRepository
+import Domain.User.Password
 import Domain.User.Course
 import qualified Domain.User.ContractRejectReason as R
 
@@ -15,21 +16,28 @@ spec :: Spec
 spec = do
     let adultUser = PreContractUserF.construct ("john", "doe") BirthDateF.adult
     let childUser = PreContractUserF.construct ("john", "doe") BirthDateF.child
-
-    let contracted = ContractedUserF.construct ("john", "doe") Basic BirthDateF.adult
+    let sameUser  = PreContractUserF.construct ("jane", "doe") BirthDateF.adult
 
     let validCreditCard = ExaminedCreditCardF.valid
     let invalidCreditCard = ExaminedCreditCardF.invalid
 
-    describe "isContractable" $ do
+    describe "checkContractable" $ do
         it "with invalid credit card is not contractable" $ do
-            isContractable adultUser []               invalidCreditCard `shouldBe` Just R.InvalidCreditCard
+            checkContractable adultUser invalidCreditCard `shouldReturn` Just R.InvalidCreditCard
 
         it "child is not contractable" $ do
-            isContractable childUser []               validCreditCard   `shouldBe` Just R.NonAdult
+            checkContractable childUser validCreditCard `shouldReturn` Just R.NonAdult
 
         it "already contracted user is not contractable" $ do
-            isContractable adultUser [contracted] validCreditCard   `shouldBe` Just R.AlreadyContracted
+            checkContractable sameUser validCreditCard   `shouldReturn` Just R.AlreadyContracted
 
         it "else contractable" $ do
-            isContractable adultUser []               validCreditCard   `shouldBe` Nothing
+            checkContractable adultUser validCreditCard `shouldReturn` Nothing
+
+    let contracted = ContractedUserF.construct ("john", "doe") Basic BirthDateF.adult
+
+    let password = Password "pw-123"
+
+    describe "contract" $ do
+        it "allocate id and password, and user is inserted" $ do
+            contract adultUser `shouldReturn` (contracted, password)

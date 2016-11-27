@@ -2,7 +2,6 @@ module Domain.User.PreContractUser where
 
 import Domain.User.FirstName
 import Domain.User.LastName
-import Domain.User.Course
 import Domain.User.Gender
 import Domain.User.BirthDate
 
@@ -16,7 +15,6 @@ import Domain.User.ForFetchSameUsers
 
 data PreContractUser = PreContractUser { firstName   :: FirstName
                                        , lastName    :: LastName
-                                       , course      :: Course
                                        , gender      :: Gender
                                        , birthDate   :: BirthDate
                                        , address     :: Address

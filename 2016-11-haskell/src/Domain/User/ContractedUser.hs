@@ -22,4 +22,4 @@ data ContractedUser = ContractedUser { userId      :: UserId
                                      , address     :: Address
                                      , phoneNumber :: PhoneNumber
                                      , mailAddress :: MailAddress
-                                     } deriving Show
+                                     } deriving (Show, Eq)

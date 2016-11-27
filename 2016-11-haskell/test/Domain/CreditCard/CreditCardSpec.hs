@@ -6,13 +6,13 @@ import Domain.CreditCard.CreditCard
 
 import qualified Domain.CreditCard.ExaminedCreditCardFixture as ExaminedCreditCardF
 import qualified Domain.CreditCard.UnexaminedCreditCardFixture as UnexaminedCreditCardF
-import qualified Domain.CreditCard.ExamineResultFixture as ExamineResultF
+import qualified Domain.CreditCard.ExamineResult as Result
 
 spec :: Spec
 spec = do
     describe "toExamined" $ do
         it "if examine result is valid, then credit card is valid" $ do
-            toExamined UnexaminedCreditCardF.get ExamineResultF.valid `shouldBe` ExaminedCreditCardF.valid
+            toExamined UnexaminedCreditCardF.valid Result.Valid `shouldBe` ExaminedCreditCardF.valid
 
         it "if examine result is invalid, then credit card is invalid" $ do
-            toExamined UnexaminedCreditCardF.get ExamineResultF.invalid `shouldBe` ExaminedCreditCardF.invalid
+            toExamined UnexaminedCreditCardF.invalid Result.Invalid `shouldBe` ExaminedCreditCardF.invalid
