@@ -22,7 +22,7 @@ data PreContractUser = PreContractUser { firstName   :: FirstName
                                        , address     :: Address
                                        , phoneNumber :: PhoneNumber
                                        , mailAddress :: MailAddress
-                                       } deriving Show
+                                       } deriving (Show, Eq)
 
 forFetchSameUsers :: PreContractUser -> ForFetchSameUsers
 forFetchSameUsers user = ForFetchSameUsers (firstName user) (lastName user)

@@ -11,4 +11,4 @@ data ExaminedCreditCard = ValidCreditCard { number       :: Number
                         InvalidCreditCard { number       :: Number
                                           , expiration   :: Expiration
                                           , securityCode :: SecurityCode
-                                          } deriving Show
+                                          } deriving (Show, Eq)

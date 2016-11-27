@@ -1,8 +1,8 @@
 module Domain.CreditCard.CreditCard where
 
+import Domain.CreditCard.ExaminedCreditCard
 import Domain.CreditCard.UnexaminedCreditCard
 import Domain.CreditCard.ExamineResult
-import Domain.CreditCard.ExaminedCreditCard
 
 toExamined :: UnexaminedCreditCard -> ExamineResult -> ExaminedCreditCard
 toExamined (UnexaminedCreditCard number expiration securityCode) result = case result of

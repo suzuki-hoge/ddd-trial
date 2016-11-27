@@ -29,6 +29,7 @@ library
                      , Domain.Mail.MailAddress
                      , Domain.Phone.PhoneNumber
                      , Domain.User.BirthDate
+                     , Domain.User.ContractRejectReason
                      , Domain.User.ContractedUser
                      , Domain.User.Course
                      , Domain.User.FirstName

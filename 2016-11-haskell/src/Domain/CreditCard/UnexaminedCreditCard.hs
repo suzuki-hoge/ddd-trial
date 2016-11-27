@@ -7,4 +7,4 @@ import Domain.CreditCard.SecurityCode
 data UnexaminedCreditCard = UnexaminedCreditCard { number       :: Number
                                                  , expiration   :: Expiration
                                                  , securityCode :: SecurityCode
-                                                 } deriving Show
+                                                 } deriving (Show, Eq)

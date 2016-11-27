@@ -5,4 +5,4 @@ import Domain.Address.Street
 
 data Address = Address { postalCode :: PostalCode
                        , street     :: Street
-                       } deriving Show
+                       } deriving (Show, Eq)

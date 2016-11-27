@@ -1,3 +1,3 @@
 module Domain.User.Gender where
 
-data Gender = Male | Female deriving Show
+data Gender = Male | Female deriving (Show, Eq)

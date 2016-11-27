@@ -5,4 +5,4 @@ import Domain.User.LastName
 
 data ForFetchSameUsers = ForFetchSameUsers { firstName :: FirstName
                                            , lastName  :: LastName
-                                           } deriving Show
+                                           } deriving (Show, Eq)
