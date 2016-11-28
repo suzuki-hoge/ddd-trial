@@ -9,6 +9,7 @@ import qualified Domain.User.ContractRejectReason as R
 import qualified Domain.User.PreContractUserFixture as PreContractUserF
 import qualified Domain.User.ContractedUserFixture as ContractedUserF
 import qualified Domain.User.BirthDateFixture as BirthDateF
+
 import qualified Domain.CreditCard.ExaminedCreditCardFixture as ExaminedCreditCardF
 
 spec :: Spec
