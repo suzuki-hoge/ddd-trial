@@ -1,6 +1,6 @@
 package domain.user.register
 
-import domain.credit_card.CreditCardInvalidReason
+import domain.credit_card.{CreditCardNumber, CreditCardInvalidReason}
 import domain.user._
 import domain.user.register.error.{UserRegistrationError, UserRegistrationInvalidMessage, UserRegistrationInvalidReason}
 import domain.user.register.same_user_validation.AlreadyRegistered
@@ -12,13 +12,14 @@ class UserRegistrationTest extends FunSuite {
   val age = Age(20)
   val eMail = EMail("john@foo")
   val registrationDate = RegistrationDate("0402")
+  val creditCardNumber = CreditCardNumber("1111-2222-3333-4444")
 
   test("valid") {
     val exp = UserRegistration.register(
-      userName, address, age, eMail, registrationDate, Right(), Right()
+      userName, address, age, eMail, registrationDate, creditCardNumber, Right(), Right()
     )
     val act = Right(
-      AppliedUser(userName, address, age, eMail, registrationDate, Course.Free)
+      AppliedUser(userName, address, age, eMail, registrationDate, Course.Free, creditCardNumber)
     )
 
     assert(exp == act)
@@ -26,7 +27,7 @@ class UserRegistrationTest extends FunSuite {
 
   test("invalid caused by non adult") {
     val exp = UserRegistration.register(
-      userName, address, Age(19), eMail, registrationDate, Right(), Right()
+      userName, address, Age(19), eMail, registrationDate, creditCardNumber, Right(), Right()
     )
     val act = Left(
       UserRegistrationError(
@@ -40,7 +41,7 @@ class UserRegistrationTest extends FunSuite {
 
   test("invalid caused by already registered") {
     val exp = UserRegistration.register(
-      userName, address, age, eMail, registrationDate, Left(AlreadyRegistered(userName)), Right()
+      userName, address, age, eMail, registrationDate, creditCardNumber, Left(AlreadyRegistered(userName)), Right()
     )
     val act = Left(
       UserRegistrationError(
@@ -54,7 +55,7 @@ class UserRegistrationTest extends FunSuite {
 
   test("invalid caused by invalid credit card") {
     val exp = UserRegistration.register(
-      userName, address, age, eMail, registrationDate, Right(), Left(CreditCardInvalidReason.InvalidNumber)
+      userName, address, age, eMail, registrationDate, creditCardNumber, Right(), Left(CreditCardInvalidReason.InvalidNumber)
     )
     val act = Left(
       UserRegistrationError(

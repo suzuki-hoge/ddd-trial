@@ -1,5 +1,6 @@
 package domain.user.register
 
+import domain.credit_card.CreditCardNumber
 import domain.user._
 
 case class AppliedUser(
@@ -8,5 +9,6 @@ case class AppliedUser(
                         age: Age,
                         eMail: EMail,
                         registrationDate: RegistrationDate,
-                        course: Course
+                        course: Course,
+                        creditCardNumber: CreditCardNumber
                         )

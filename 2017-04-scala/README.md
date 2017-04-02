@@ -1,5 +1,6 @@
-# お題
+# DDDお題
+飽きもせず、多分6回目
+
 + [仕様](doc/spec.md)
-+ [単語](doc/word.md)
 + [モデル](doc/model.md)
 + [感想](doc/note.md)

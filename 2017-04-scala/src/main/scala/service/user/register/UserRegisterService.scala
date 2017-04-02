@@ -25,6 +25,7 @@ case class UserRegisterService(
       age,
       eMail,
       registrationDate,
+      creditCardNumber,
       sameUserValidationRepository.isValid(SameUserValidation(userName)),
       creditCardRepository.isValid(creditCardNumber)
     ).right.map {
