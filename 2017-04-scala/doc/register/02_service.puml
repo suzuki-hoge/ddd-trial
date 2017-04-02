@@ -10,43 +10,48 @@ namespace api {
   namespace user {
     namespace register {
       class UserRegisterApi {
-        UserRegisterResponse register()
+        UserRegisterResponse register(...)
       }
 
       class UserRegisterResponse {
         Map<String, String>
         {static} UserRegisterResponse create(Either[ValidationError, Either[UserRegistrationError, (UserId, Password)]])
+        String toJson()
       }
-
-      class UserNameForm {
-        Either[ValidationError, UserName] bind()
-      }
-      class AddressForm
-      class AgeForm
-      class EMailForm
-      class RegistrationDateForm
-      class CreditCardNumberForm
 
       UserRegisterApi -right-> UserRegisterResponse
 
-      UserRegisterApi -up-> UserNameForm
-      UserRegisterApi -up-> AddressForm
-      UserRegisterApi -up-> AgeForm
-      UserRegisterApi -up-> EMailForm
-      UserRegisterApi -up-> RegistrationDateForm
-      UserRegisterApi -up-> CreditCardNumberForm
+      package form {
+        class UserNameForm {
+          Either[ValidationError, UserName] bind()
+        }
+        class AddressForm
+        class AgeForm
+        class EMailForm
+        class RegistrationDateForm
+        class CreditCardNumberForm
+      }
+
+      UserRegisterApi -up-> .UserNameForm
+      UserRegisterApi -up-> .AddressForm
+      UserRegisterApi -up-> .AgeForm
+      UserRegisterApi -up-> .EMailForm
+      UserRegisterApi -up-> .RegistrationDateForm
+      UserRegisterApi -up-> .CreditCardNumberForm
     }
   }
 }
 
 package service {
-  package register {
-    class UserRegisterService {
-      Either[UserRegistrationError, (UserId, Password)] register(....)
+  package user {
+    package register {
+      class UserRegisterService {
+        Either[UserRegistrationError, (UserId, Password)] register(....)
+      }
     }
-  }
 
-  api.user.register.UserRegisterApi -down-> UserRegisterService
+    api.user.register.UserRegisterApi -down-> UserRegisterService
+  }
 }
 
 

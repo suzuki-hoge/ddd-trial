@@ -2,12 +2,6 @@
 
 package domain {
   package user {
-    package authentication {
-      class Password {
-        String
-      }
-    }
-
     package register {
       class AppliedUser {
         UserName
@@ -15,11 +9,11 @@ package domain {
         Age
         EMail
         RegistrationDate
-        CreditCardNumber
+        Course
       }
 
       interface UserRegisterRepository {
-        UserId, Password register(AppliedUser)
+        (UserId, Password) register(AppliedUser)
       }
 
       package same_user_validation {
@@ -33,14 +27,14 @@ package domain {
 
         class AlreadyRegistered {
           UserName
-          UserRegistrationError toRegistrationError()
+          UserRegistrationError toUserRegistrationError()
         }
 
         SameUserValidationRepository --> AlreadyRegistered
       }
 
       class UserRegistration {
-        Either[UserRegistrationError, AppliedUser] register(UserName, Address, Age, Email, RegistrationDate, Either[AlreadyRegistered, Unit], Either[CreditCardInvalidReason, Unit])
+        {static} Either[UserRegistrationError, AppliedUser] register(UserName, Address, Age, Email, RegistrationDate, Either[AlreadyRegistered, Unit], Either[CreditCardInvalidReason, Unit])
       }
 
       package error {
@@ -70,7 +64,7 @@ package domain {
 
     class InvalidAge {
       Int
-      UserRegistrationError toRegistrationError()
+      UserRegistrationError toUserRegistrationError()
     }
 
     Age --> InvalidAge
@@ -78,6 +72,8 @@ package domain {
     enum Course {
       Free, Toll
     }
+
+    UserRegistration -up-> Course: Free
   }
 
   package credit_card {
@@ -91,8 +87,8 @@ package domain {
     }
 
     enum CreditCardInvalidReason {
-      InvalidNumber, InvalidBirthDay
-      UserRegistrationError toRegistrationError()
+      InvalidNumber, InvalidBirthDate
+      UserRegistrationError toUserRegistrationError()
     }
 
     CreditCardRepository -right-> CreditCardInvalidReason
@@ -105,12 +101,13 @@ namespace data_source {
     }
 
     class CreditCardInvalidCode {
-      Int
-      CreditCardInvalidReason toReason()
+      String
+      Either[CreditCardInvalidReason, Unit] toReason()
     }
 
     CreditCardRepositoryImpl -up-|> .CreditCardRepository
     CreditCardRepositoryImpl -right-> CreditCardInvalidCode
+    CreditCardInvalidCode --> .CreditCardInvalidReason
   }
 }
 
