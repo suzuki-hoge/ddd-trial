@@ -12,7 +12,7 @@ case class UserRegisterResponse(params: Seq[(String, String)]) {
 object UserRegisterResponse {
   def create(result: Either[ValidationError, Either[UserRegistrationError, (UserId, Password)]]): UserRegisterResponse = {
     UserRegisterResponse(result match {
-      case Left(ve) => List(("error_reason", "validation-error"), ("error_message", ve.message))
+      case Left(ve) => List(("error_reason", "validation_error"), ("error_message", ve.message))
       case Right(Left(ure)) => List(("error_reason", ure.reason.name()), ("error_message", ure.message.value))
       case Right(Right((id, pw))) => List(("user_id", id.value), ("password", pw.value))
     })

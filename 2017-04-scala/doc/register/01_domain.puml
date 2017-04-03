@@ -84,7 +84,6 @@ package domain {
 
     class CreditCardNumber {
       String
-      MaskedCreditCardNumberNumber mask()
     }
 
     enum CreditCardInvalidReason {
