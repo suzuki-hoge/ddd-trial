@@ -1,0 +1,132 @@
+@startuml
+
+package core {
+  package user {
+    class UserId {
+      - String
+    }
+    enum Course {
+      FREE
+    }
+  }
+  package user_name {
+    class UserName {
+      - String first
+    }
+  }
+  package address {
+    class Address {
+      - String prefecture
+    }
+  }
+  package birth_date {
+    class BirthDate {
+      - LocalDate value
+      + Bool isMinor()
+    }
+  }
+  package mail_address {
+    class MailAddress {
+      - String value
+    }
+  }
+  package credit_card {
+    class CreditCard {
+      - String number
+    }
+    enum CreditCardVerificationResult {
+      VALID,
+      INVALID
+    }
+    interface CreditCardRepository {
+      + CreditCardVerificationResult verify(CreditCard)
+    }
+    CreditCardRepository -right-> CreditCard
+    CreditCardRepository -down-> CreditCardVerificationResult
+  }
+  BirthDate -[hidden]down-> MailAddress
+  Address -[hidden]down-> UserName
+}
+package authentication {
+  class UserPassword {
+    - String
+  }
+  interface AuthenticationRepository {
+    + UserId, UserPassword allocate()
+    + authenticate(UserId, UserPassword)
+  }
+}
+AuthenticationRepository --> UserId
+AuthenticationRepository --> UserPassword
+package sign_up {
+  package application {
+    class SignUpApplication {
+      - UserName
+      - Address
+      - BirthDate
+      - MailAddress
+      - CreditCard
+      + SameUserForSignUpApplicableCheck sameUser()
+      + BirthDateForSignUpApplicableCheck birthDate()
+      + AppliedUser signUp(UserId, SignUpApplicationDateTime)
+    }
+    class SignUpApplicationDateTime {
+      - LocalDateTime
+    }
+    enum BirthDateForSignUpApplicableCheck {
+      MAJORS,
+      MINORS
+      + {static} of(BirthDate)
+    }
+    package same_user {
+      class SameUser {
+        - UserName
+      }
+      enum SameUserForSignUpApplicableCheck {
+        EXIST,
+        NOT_EXIST
+      }
+      interface SameUserRepository {
+        + SameUserForSignUpApplicableCheck exists(SameUser)
+      }
+      SameUserRepository -right-> SameUser
+      SameUserRepository -up-> SameUserForSignUpApplicableCheck
+    }
+    class SignUpApplicablePolicy {
+      + {static] RejectReason check(BirthDateForSUAC, CreditCardVerificationResult, SameUserForSignUpApplicableCheck)
+    }
+    SignUpApplicablePolicy -up-> CreditCardVerificationResult
+    SignUpApplicablePolicy -left-> BirthDateForSignUpApplicableCheck
+    SignUpApplicablePolicy -down-> SameUserForSignUpApplicableCheck
+
+    SignUpApplication --> SameUser
+    SignUpApplication -up-> BirthDateForSignUpApplicableCheck
+    SignUpApplication --> SignUpApplicationDateTime
+  }
+  package _user {
+    class AppliedUser<<UserEntity>> {
+      - UserId
+      - UserName
+      - Address
+      - BirthDate
+      - MailAddress
+      - Course
+      - SignUpApplicationDateTime
+    }
+    interface AppliedUserRepository {
+      + apply(AppliedUser)
+    }
+    AppliedUserRepository -right-> AppliedUser
+  }
+  SignUpApplication -left-> AppliedUser
+  package error {
+    enum RejectReason {
+      MINORS_CANNOT_APPLY,
+      INVALID_CREDIT_CARD,
+      ALREADY_APPLIED
+    }
+  }
+  SignUpApplicablePolicy -right-> RejectReason
+}
+
+@enduml

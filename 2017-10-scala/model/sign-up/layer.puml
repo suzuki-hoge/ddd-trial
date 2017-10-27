@@ -1,0 +1,65 @@
+@startuml
+
+namespace api {
+  namespace core {
+    namespace form {
+      namespace validation {
+        class ValidationError {
+          - String
+        }
+      }
+      namespace user_name {
+        class UserNameForm {
+          + {static} Validation<VError, UserName> bind(String)
+        }
+      }
+      namespace address {
+        class AddressForm {
+          + {static} Validation<VError, Address> bind(String)
+        }
+      }
+      namespace birth_date {
+        class BirthDateForm {
+          + {static} Validation<VError, BirthDate> bind(String)
+        }
+      }
+      namespace mail_address {
+        class MailAddressForm {
+          + {static} Validation<VError, MailAddress> bind(String)
+        }
+      }
+      namespace credit_card {
+        class CreditCardForm {
+          + {static} Validation<VError, CreditCard> bind(String)
+        }
+      }
+      api.core.form.user_name.UserNameForm -[hidden]> api.core.form.address.AddressForm
+      api.core.form.address.AddressForm -[hidden]> api.core.form.birth_date.BirthDateForm
+      api.core.form.birth_date.BirthDateForm -[hidden]> api.core.form.mail_address.MailAddressForm
+      api.core.form.mail_address.MailAddressForm -[hidden]> api.core.form.credit_card.CreditCardForm
+      api.core.form.credit_card.CreditCardForm -[hidden]> api.core.form.validation.ValidationError
+    }
+  }
+  namespace sign_up {
+    namespace application {
+      namespace form {
+        class SignUpApplicationForm {
+          + {static} Validation<VError, SignUpApplication> bind(String,,,)
+        }
+      }
+      class SignUpApplicationApi {
+        + Either<String, [UserName, UserPassword]> apply(String,,,)
+      }
+    }
+  }
+  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.user_name.UserNameForm
+  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.address.AddressForm
+  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.birth_date.BirthDateForm
+  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.mail_address.MailAddressForm
+  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.credit_card.CreditCardForm
+  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.validation.ValidationError
+  
+  api.sign_up.application.SignUpApplicationApi -up-> api.sign_up.application.form.SignUpApplicationForm
+}
+
+@enduml
