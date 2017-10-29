@@ -1,0 +1,51 @@
+@startuml
+
+package re_sign {
+  package confirm {
+    class ReSignConfirmApplication {
+      - UserId
+    }
+  }
+  package application {
+    class ReSignApplication {
+      - UserId
+    }
+    class ReSignApplicationDateTime {
+      - LocalDateTime
+    }
+    class ReSignApplicablePolicy {
+      + {static] Either[RejectReason, Unit] check(() => ReSignedUser)
+    }
+  }
+  package user {
+    class ReSignUser<<UserEntity>> {
+      - UserId
+      - UserName
+      - Address
+      - BirthDate
+      - MailAddress
+      - SignUpApplicationDateTime
+      + ReSignedUser apply(now)
+    }
+    class ReSignedUser<<UserEntity>> {
+      - UserId
+      - ReSignApplicationDateTime
+    }
+    interface ReSignUserRepository {
+      + ReSignUser findReSign(UserId)
+      + reSign(ReSignedUser)
+      + ReSignedUser findReSigned(UserId)
+    }
+    ReSignUser --> ReSignedUser
+    ReSignUserRepository --> ReSignedUser
+    ReSignUserRepository -> ReSignUser
+  }
+  package error {
+    enum RejectReason {
+      AlreadyReSigned
+    }
+  }
+  ReSignApplicablePolicy --> RejectReason
+}
+
+@enduml
