@@ -1,7 +1,7 @@
 @startuml
 
 package withdraw {
-  package confirm {
+  package confirmation {
     class WithdrawalConfirmApplication {
       - UserId
     }
