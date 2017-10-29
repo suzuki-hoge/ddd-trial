@@ -1,4 +1,4 @@
-package domain.sign_up.error
+package domain.admit.error
 
 sealed trait RejectReason
 
@@ -6,4 +6,4 @@ case object MinorsCannotApply extends RejectReason
 
 case object InvalidCreditCard extends RejectReason
 
-case object AlreadyApplied extends RejectReason
+case object AlreadyAdmitted extends RejectReason

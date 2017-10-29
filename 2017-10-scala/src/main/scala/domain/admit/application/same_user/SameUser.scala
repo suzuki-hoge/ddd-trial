@@ -1,4 +1,4 @@
-package domain.sign_up.application.same_user
+package domain.admit.application.same_user
 
 import domain.core.user_name.UserName
 

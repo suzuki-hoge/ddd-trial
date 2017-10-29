@@ -1,17 +1,17 @@
-package service.sign_up
+package service.admit
 
 import domain.authentication.{AuthenticationRepository, UserPassword}
 import domain.core.credit_card.{CreditCard, CreditCardRepository, CreditCardVerificationResult, Valid}
 import domain.core.user.UserId
-import domain.sign_up.application.same_user.{NotExist, SameUser, SameUserForSignUpApplicableCheck, SameUserRepository}
-import domain.sign_up.application.{SignUpApplicablePolicy, SignUpApplication}
-import domain.sign_up.error.RejectReason
+import domain.admit.application.same_user.{NotExist, SameUser, SameUserForAdmitApplicableCheck, SameUserRepository}
+import domain.admit.application.{AdmitApplicablePolicy, AdmitApplication}
+import domain.admit.error.RejectReason
 
-object SignUpApplicationService {
-  type Service = SignUpApplication => Either[RejectReason, (UserId, UserPassword)]
+object AdmitApplicationService {
+  type Service = AdmitApplication => Either[RejectReason, (UserId, UserPassword)]
 
   def apply: Service = app => {
-    SignUpApplicablePolicy.check(
+    AdmitApplicablePolicy.check(
       app.birthDate(2017),
       () => CreditCardRepositoryImpl.verify(app.card),
       () => SameUserRepositoryImpl.exists(app.sameUser())
@@ -28,7 +28,7 @@ object CreditCardRepositoryImpl extends CreditCardRepository {
 }
 
 object SameUserRepositoryImpl extends SameUserRepository {
-  def exists(sameUser: SameUser): SameUserForSignUpApplicableCheck = {
+  def exists(sameUser: SameUser): SameUserForAdmitApplicableCheck = {
     NotExist
   }
 }

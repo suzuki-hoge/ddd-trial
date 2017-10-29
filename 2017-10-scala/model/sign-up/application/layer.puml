@@ -34,25 +34,25 @@ namespace api {
       api.core.form.mail_address.MailAddressForm -[hidden]> api.core.form.credit_card.CreditCardForm
     }
   }
-  namespace sign_up {
+  namespace admit {
     namespace application {
       namespace form {
-        class SignUpApplicationForm {
-          + {static} Either<String, SignUpApplication> bind(String,,,)
+        class AdmitApplicationForm {
+          + {static} Either<String, AdmitApplication> bind(String,,,)
         }
       }
-      class SignUpApplicationApi {
+      class AdmitApplicationApi {
         + Either<String, [UserId, UserPassword]> apply(String,,,)
       }
     }
   }
-  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.user_name.UserNameForm
-  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.address.AddressForm
-  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.birth_date.BirthDateForm
-  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.mail_address.MailAddressForm
-  api.sign_up.application.form.SignUpApplicationForm -up-> api.core.form.credit_card.CreditCardForm
+  api.admit.application.form.AdmitApplicationForm -up-> api.core.form.user_name.UserNameForm
+  api.admit.application.form.AdmitApplicationForm -up-> api.core.form.address.AddressForm
+  api.admit.application.form.AdmitApplicationForm -up-> api.core.form.birth_date.BirthDateForm
+  api.admit.application.form.AdmitApplicationForm -up-> api.core.form.mail_address.MailAddressForm
+  api.admit.application.form.AdmitApplicationForm -up-> api.core.form.credit_card.CreditCardForm
 
-  api.sign_up.application.SignUpApplicationApi -up-> api.sign_up.application.form.SignUpApplicationForm
+  api.admit.application.AdmitApplicationApi -up-> api.admit.application.form.AdmitApplicationForm
 }
 
 @enduml

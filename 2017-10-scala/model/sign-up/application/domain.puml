@@ -58,22 +58,22 @@ package authentication {
 }
 AuthenticationRepository --> UserId
 AuthenticationRepository --> UserPassword
-package sign_up {
+package admit {
   package application {
-    class SignUpApplication {
+    class AdmitApplication {
       - UserName
       - Address
       - BirthDate
       - MailAddress
       - CreditCard
       + SameUser sameUser()
-      + BirthDateForSignUpApplicableCheck birthDate(now)
-      + AppliedUser signUp(UserId, SignUpApplicationDateTime)
+      + BirthDateForAdmitApplicableCheck birthDate(now)
+      + AdmittedUser apply(UserId, AdmitApplicationDateTime)
     }
-    class SignUpApplicationDateTime {
+    class AdmitApplicationDateTime {
       - LocalDateTime
     }
-    enum BirthDateForSignUpApplicableCheck {
+    enum BirthDateForAdmitApplicableCheck {
       Majors,
       Minors
       + {static} of(BirthDate, now)
@@ -82,51 +82,51 @@ package sign_up {
       class SameUser {
         - UserName
       }
-      enum SameUserForSignUpApplicableCheck {
+      enum SameUserForAdmitApplicableCheck {
         Exist,
         NotExist
       }
       interface SameUserRepository {
-        + SameUserForSignUpApplicableCheck exists(SameUser)
+        + SameUserForAdmitApplicableCheck exists(SameUser)
       }
       SameUserRepository -right-> SameUser
-      SameUserRepository -up-> SameUserForSignUpApplicableCheck
+      SameUserRepository -up-> SameUserForAdmitApplicableCheck
     }
-    class SignUpApplicablePolicy {
-      + {static] Either[RejectReason, Unit] check(BirthDateForSUAC, () => CreditCardVerificationResult, () => SameUserForSignUpApplicableCheck)
+    class AdmitApplicablePolicy {
+      + {static] Either[RejectReason, Unit] check(BirthDateForSUAC, () => CreditCardVerificationResult, () => SameUserForAdmitApplicableCheck)
     }
-    SignUpApplicablePolicy -up-> CreditCardVerificationResult
-    SignUpApplicablePolicy -left-> BirthDateForSignUpApplicableCheck
-    SignUpApplicablePolicy -down-> SameUserForSignUpApplicableCheck
+    AdmitApplicablePolicy -up-> CreditCardVerificationResult
+    AdmitApplicablePolicy -left-> BirthDateForAdmitApplicableCheck
+    AdmitApplicablePolicy -down-> SameUserForAdmitApplicableCheck
 
-    SignUpApplication --> SameUser
-    SignUpApplication -up-> BirthDateForSignUpApplicableCheck
-    SignUpApplication --> SignUpApplicationDateTime
+    AdmitApplication --> SameUser
+    AdmitApplication -up-> BirthDateForAdmitApplicableCheck
+    AdmitApplication --> AdmitApplicationDateTime
   }
   package _user {
-    class AppliedUser<<UserEntity>> {
+    class AdmittedUser<<UserEntity>> {
       - UserId
       - UserName
       - Address
       - BirthDate
       - MailAddress
       - Course
-      - SignUpApplicationDateTime
+      - AdmitApplicationDateTime
     }
-    interface AppliedUserRepository {
-      + apply(AppliedUser)
+    interface AdmittedUserRepository {
+      + admit(AdmittedUser)
     }
-    AppliedUserRepository -right-> AppliedUser
+    AdmittedUserRepository -right-> AdmittedUser
   }
-  SignUpApplication -left-> AppliedUser
+  AdmitApplication -left-> AdmittedUser
   package error {
     enum RejectReason {
       MinorsCannotApply,
       InvalidCreditCard,
-      AlreadyApplied
+      AlreadyAdmitted
     }
   }
-  SignUpApplicablePolicy -right-> RejectReason
+  AdmitApplicablePolicy -right-> RejectReason
 }
 
 @enduml

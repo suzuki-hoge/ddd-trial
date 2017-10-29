@@ -1,51 +1,51 @@
 @startuml
 
-package re_sign {
+package withdraw {
   package confirm {
-    class ReSignConfirmApplication {
+    class WithdrawalConfirmApplication {
       - UserId
     }
   }
   package application {
-    class ReSignApplication {
+    class WithdrawApplication {
       - UserId
     }
-    class ReSignApplicationDateTime {
+    class WithdrawApplicationDateTime {
       - LocalDateTime
     }
-    class ReSignApplicablePolicy {
-      + {static] Either[RejectReason, Unit] check(() => ReSignedUser)
+    class WithdrawApplicablePolicy {
+      + {static] Either[RejectReason, Unit] check(() => WithdrawnUser)
     }
   }
   package user {
-    class ReSignUser<<UserEntity>> {
+    class WithdrawUser<<UserEntity>> {
       - UserId
       - UserName
       - Address
       - BirthDate
       - MailAddress
-      - SignUpApplicationDateTime
-      + ReSignedUser apply(now)
+      - AdmitApplicationDateTime
+      + WithdrawnUser apply(now)
     }
-    class ReSignedUser<<UserEntity>> {
+    class WithdrawnUser<<UserEntity>> {
       - UserId
-      - ReSignApplicationDateTime
+      - WithdrawApplicationDateTime
     }
-    interface ReSignUserRepository {
-      + ReSignUser findReSign(UserId)
-      + reSign(ReSignedUser)
-      + ReSignedUser findReSigned(UserId)
+    interface WithdrawUserRepository {
+      + WithdrawUser findWithdraw(UserId)
+      + withdraw(WithdrawnUser)
+      + WithdrawnUser findWithdrawn(UserId)
     }
-    ReSignUser --> ReSignedUser
-    ReSignUserRepository --> ReSignedUser
-    ReSignUserRepository -> ReSignUser
+    WithdrawUser --> WithdrawnUser
+    WithdrawUserRepository --> WithdrawnUser
+    WithdrawUserRepository -> WithdrawUser
   }
   package error {
     enum RejectReason {
-      AlreadyReSigned
+      AlreadyWithdrawn
     }
   }
-  ReSignApplicablePolicy --> RejectReason
+  WithdrawApplicablePolicy --> RejectReason
 }
 
 @enduml

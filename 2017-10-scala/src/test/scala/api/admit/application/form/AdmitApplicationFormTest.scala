@@ -1,18 +1,18 @@
-package api.sign_up.application.form
+package api.admit.application.form
 
 import domain.core.address.Address
 import domain.core.birth_date.BirthDate
 import domain.core.credit_card.CreditCard
 import domain.core.mail_address.MailAddress
 import domain.core.user_name.UserName
-import domain.sign_up.application.SignUpApplication
+import domain.admit.application.AdmitApplication
 import org.scalatest.FunSuite
 
-class SignUpApplicationFormTest extends FunSuite {
+class AdmitApplicationFormTest extends FunSuite {
   test("bind") {
     // failure
     assert(
-      SignUpApplicationForm.bind(
+      AdmitApplicationForm.bind(
         "",
         "",
         "",
@@ -25,7 +25,7 @@ class SignUpApplicationFormTest extends FunSuite {
 
     // failure
     assert(
-      SignUpApplicationForm.bind(
+      AdmitApplicationForm.bind(
         "John",
         "",
         "",
@@ -38,14 +38,14 @@ class SignUpApplicationFormTest extends FunSuite {
 
     // success
     assert(
-      SignUpApplicationForm.bind(
+      AdmitApplicationForm.bind(
         "John",
         "Tokyo",
         "1900",
         "boss@msf",
         "1234"
       ) == Right(
-        SignUpApplication(
+        AdmitApplication(
           UserName("John"),
           Address("Tokyo"),
           BirthDate(1900),
