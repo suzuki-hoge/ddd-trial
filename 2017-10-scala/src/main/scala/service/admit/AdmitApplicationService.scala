@@ -23,22 +23,22 @@ object AdmitApplicationService {
 
 object CreditCardRepositoryImpl extends CreditCardRepository {
   def verify(creditCard: CreditCard): CreditCardVerificationResult = {
-    Valid
+    ???
   }
 }
 
 object SameUserRepositoryImpl extends SameUserRepository {
   def exists(sameUser: SameUser): SameUserForAdmitApplicableCheck = {
-    NotExist
+    ???
   }
 }
 
 object AuthenticationRepositoryImpl extends AuthenticationRepository {
   def allocate(): (UserId, UserPassword) = {
-    (UserId("1"), UserPassword("1"))
+    ???
   }
 
   def authenticate(userId: UserId, userPassword: UserPassword): Either[String, Unit] = {
-    Right()
+    ???
   }
 }

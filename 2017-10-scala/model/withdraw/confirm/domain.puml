@@ -9,12 +9,14 @@ package withdraw {
   package application {
     class WithdrawApplication {
       - UserId
+      + WithdrawalConfirmApplication asConfirmApplication()
     }
+    WithdrawApplication --> WithdrawalConfirmApplication
     class WithdrawApplicationDateTime {
       - LocalDateTime
     }
     class WithdrawApplicablePolicy {
-      + {static] Either[RejectReason, Unit] check(() => WithdrawnUser)
+      + {static] Either[RejectReason, Unit] check(() => Option[WithdrawnUser])
     }
   }
   package user {
@@ -34,7 +36,7 @@ package withdraw {
     interface WithdrawUserRepository {
       + WithdrawUser findWithdraw(UserId)
       + withdraw(WithdrawnUser)
-      + WithdrawnUser findWithdrawn(UserId)
+      + Option[WithdrawnUser] findWithdrawn(UserId)
     }
     WithdrawUser --> WithdrawnUser
     WithdrawUserRepository --> WithdrawnUser
