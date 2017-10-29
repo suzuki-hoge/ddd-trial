@@ -6,7 +6,7 @@ package core {
       - String
     }
     enum Course {
-      FREE
+      Free
     }
   }
   package user_name {
@@ -22,7 +22,7 @@ package core {
   package birth_date {
     class BirthDate {
       - LocalDate value
-      + Bool isMinor()
+      + Bool isMinors(LocalDate now)
     }
   }
   package mail_address {
@@ -35,8 +35,8 @@ package core {
       - String number
     }
     enum CreditCardVerificationResult {
-      VALID,
-      INVALID
+      Valid,
+      Invalid
     }
     interface CreditCardRepository {
       + CreditCardVerificationResult verify(CreditCard)
@@ -53,7 +53,7 @@ package authentication {
   }
   interface AuthenticationRepository {
     + UserId, UserPassword allocate()
-    + authenticate(UserId, UserPassword)
+    + Either[String, Unit] authenticate(UserId, UserPassword)
   }
 }
 AuthenticationRepository --> UserId
@@ -66,25 +66,25 @@ package sign_up {
       - BirthDate
       - MailAddress
       - CreditCard
-      + SameUserForSignUpApplicableCheck sameUser()
-      + BirthDateForSignUpApplicableCheck birthDate()
+      + SameUser sameUser()
+      + BirthDateForSignUpApplicableCheck birthDate(now)
       + AppliedUser signUp(UserId, SignUpApplicationDateTime)
     }
     class SignUpApplicationDateTime {
       - LocalDateTime
     }
     enum BirthDateForSignUpApplicableCheck {
-      MAJORS,
-      MINORS
-      + {static} of(BirthDate)
+      Majors,
+      Minors
+      + {static} of(BirthDate, now)
     }
     package same_user {
       class SameUser {
         - UserName
       }
       enum SameUserForSignUpApplicableCheck {
-        EXIST,
-        NOT_EXIST
+        Exist,
+        NotExist
       }
       interface SameUserRepository {
         + SameUserForSignUpApplicableCheck exists(SameUser)
@@ -93,7 +93,7 @@ package sign_up {
       SameUserRepository -up-> SameUserForSignUpApplicableCheck
     }
     class SignUpApplicablePolicy {
-      + {static] RejectReason check(BirthDateForSUAC, CreditCardVerificationResult, SameUserForSignUpApplicableCheck)
+      + {static] Either[RejectReason, Unit] check(BirthDateForSUAC, () => CreditCardVerificationResult, () => SameUserForSignUpApplicableCheck)
     }
     SignUpApplicablePolicy -up-> CreditCardVerificationResult
     SignUpApplicablePolicy -left-> BirthDateForSignUpApplicableCheck
@@ -121,9 +121,9 @@ package sign_up {
   SignUpApplication -left-> AppliedUser
   package error {
     enum RejectReason {
-      MINORS_CANNOT_APPLY,
-      INVALID_CREDIT_CARD,
-      ALREADY_APPLIED
+      MinorsCannotApply,
+      InvalidCreditCard,
+      AlreadyApplied
     }
   }
   SignUpApplicablePolicy -right-> RejectReason
