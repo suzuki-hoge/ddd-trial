@@ -1,0 +1,66 @@
+@startuml
+
+namespace api {
+  namespace user {
+    namespace refer {
+      class UserReferApi {
+        UserReferResponse refer(...)
+      }
+
+      class UserReferResponse {
+        Map<String, String>
+        {static} UserRegisterResponse authenticationError(UserId, Password)
+        {static} UserRegisterResponse validationError(ValidationError)
+        {static} UserRegisterResponse success(ReferredUser)
+        String toJson()
+      }
+
+      UserReferApi -right-> UserReferResponse
+
+      package form {
+        class UserIdForm {
+          Either[ValidationError, UserId] bind()
+        }
+      }
+
+      UserReferApi -up-> .UserIdForm
+    }
+  }
+
+  namespace authentication {
+    namespace form {
+      class PasswordForm
+    }
+  }
+  api.user.refer.UserReferApi -up-> api.authentication.form.PasswordForm
+}
+
+package service {
+  package user {
+    package refer {
+      class UserReferService {
+        ReferredUser refer(....)
+      }
+    }
+
+    api.user.refer.UserReferApi -down-> UserReferService
+  }
+
+  package authentication {
+    class AuthenticationService {
+      Boolean isValid(UserId, Password)
+    }
+  }
+}
+
+
+package domain {
+  interface UserReferRepository
+  interface AuthenticationRepository
+}
+
+UserReferService --> UserReferRepository
+AuthenticationService --> AuthenticationRepository
+api.user.refer.UserReferApi --> AuthenticationService
+
+@enduml

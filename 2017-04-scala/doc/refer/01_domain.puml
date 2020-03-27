@@ -1,0 +1,36 @@
+@startuml
+
+package domain {
+  package authentication {
+    interface AuthenticationRepository {
+      Boolean isValid(UserId, Password)
+    }
+  }
+
+  package user {
+    package refer {
+      class ReferredUser {
+        UserId
+        UserName
+        Address
+        Age
+        MaskedCreditCardNumber
+        EMail
+        RegistrationDate
+      }
+
+      interface UserReferRepository {
+        ReferredUser refer(UserId)
+      }
+    }
+  }
+
+  package credit_card {
+    class MaskedCreditCardNumber {
+      String
+      {static} create(String)
+    }
+  }
+}
+
+@enduml

@@ -1,0 +1,114 @@
+@startuml
+
+package domain {
+  package user {
+    package register {
+      class AppliedUser {
+        UserName
+        Address
+        Age
+        EMail
+        RegistrationDate
+        Course
+        CreditCardNumber
+      }
+
+      interface UserRegisterRepository {
+        (UserId, Password) register(AppliedUser)
+      }
+
+      package same_user_validation {
+        class SameUserValidation {
+          UserName
+        }
+
+        interface SameUserValidationRepository {
+          Either[AlreadyRegistered, Unit] isValid(SameUserValidation)
+        }
+
+        class AlreadyRegistered {
+          UserName
+          UserRegistrationError toUserRegistrationError()
+        }
+
+        SameUserValidationRepository --> AlreadyRegistered
+      }
+
+      class UserRegistration {
+        {static} Either[UserRegistrationError, AppliedUser] register(UserName, Address, Age, Email, RegistrationDate, Either[AlreadyRegistered, Unit], Either[CreditCardInvalidReason, Unit])
+      }
+
+      package error {
+        class UserRegistrationError {
+        }
+
+        enum UserRegistrationInvalidReason {
+          NonAdult, AlreadyRegistered, InvalidCreditCard
+        }
+
+        class UserRegistrationInvalidMessage {
+          String
+        }
+
+        UserRegistrationError --> UserRegistrationInvalidReason
+        UserRegistrationError --> UserRegistrationInvalidMessage
+      }
+
+      UserRegistration --> UserRegistrationError
+      UserRegistration --> AppliedUser
+    }
+
+    class Age {
+      Int
+      Either[InvalidAge, Unit] isAdult()
+    }
+
+    class InvalidAge {
+      Int
+      UserRegistrationError toUserRegistrationError()
+    }
+
+    Age --> InvalidAge
+
+    enum Course {
+      Free, Toll
+    }
+
+    UserRegistration -up-> Course: Free
+  }
+
+  package credit_card {
+    interface CreditCardRepository {
+      Either[CreditCardInvalidReason, Unit] isValid(CreditCardNumber)
+    }
+
+    class CreditCardNumber {
+      String
+    }
+
+    enum CreditCardInvalidReason {
+      InvalidNumber, InvalidBirthDate
+      UserRegistrationError toUserRegistrationError()
+    }
+
+    CreditCardRepository -right-> CreditCardInvalidReason
+  }
+}
+
+namespace data_source {
+  namespace credit_card {
+    class CreditCardRepositoryImpl {
+    }
+
+    class CreditCardInvalidCode {
+      String
+      Either[CreditCardInvalidReason, Unit] toReason()
+    }
+
+    CreditCardRepositoryImpl -up-|> .CreditCardRepository
+    CreditCardRepositoryImpl -right-> CreditCardInvalidCode
+    CreditCardInvalidCode --> .CreditCardInvalidReason
+  }
+}
+
+@enduml
