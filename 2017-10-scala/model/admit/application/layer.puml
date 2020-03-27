@@ -1,0 +1,58 @@
+@startuml
+
+namespace api {
+  namespace core {
+    namespace form {
+      namespace user_name {
+        class UserNameForm {
+          + {static} Either<String, UserName> bind(String)
+        }
+      }
+      namespace address {
+        class AddressForm {
+          + {static} Either<String, Address> bind(String)
+        }
+      }
+      namespace birth_date {
+        class BirthDateForm {
+          + {static} Either<String, BirthDate> bind(String)
+        }
+      }
+      namespace mail_address {
+        class MailAddressForm {
+          + {static} Either<String, MailAddress> bind(String)
+        }
+      }
+      namespace credit_card {
+        class CreditCardForm {
+          + {static} Either<String, CreditCard> bind(String)
+        }
+      }
+      api.core.form.user_name.UserNameForm -[hidden]> api.core.form.address.AddressForm
+      api.core.form.address.AddressForm -[hidden]> api.core.form.birth_date.BirthDateForm
+      api.core.form.birth_date.BirthDateForm -[hidden]> api.core.form.mail_address.MailAddressForm
+      api.core.form.mail_address.MailAddressForm -[hidden]> api.core.form.credit_card.CreditCardForm
+    }
+  }
+  namespace admit {
+    namespace application {
+      namespace form {
+        class AdmitApplicationForm {
+          + {static} Either<String, AdmitApplication> bind(String,,,)
+        }
+      }
+      class AdmitApplicationApi {
+        + Either<String, [UserId, UserPassword]> apply(String,,,)
+      }
+    }
+  }
+  api.admit.application.form.AdmitApplicationForm -up-> api.core.form.user_name.UserNameForm
+  api.admit.application.form.AdmitApplicationForm -up-> api.core.form.address.AddressForm
+  api.admit.application.form.AdmitApplicationForm -up-> api.core.form.birth_date.BirthDateForm
+  api.admit.application.form.AdmitApplicationForm -up-> api.core.form.mail_address.MailAddressForm
+  api.admit.application.form.AdmitApplicationForm -up-> api.core.form.credit_card.CreditCardForm
+
+  api.admit.application.AdmitApplicationApi -up-> api.admit.application.form.AdmitApplicationForm
+}
+
+@enduml

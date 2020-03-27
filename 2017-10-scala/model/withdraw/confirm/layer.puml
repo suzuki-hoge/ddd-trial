@@ -1,0 +1,42 @@
+@startuml
+
+namespace api {
+  namespace withdraw {
+    namespace confirmation {
+      namespace form {
+        class WithdrawalConfirmApplicationForm {
+          + {static} Either<String, WithdrawalConfirmApplication> bind(String)
+        }
+      }
+      class WithdrawalConfirmApplicationApi {
+        + Either<String, WithdrawUser> apply(String)
+      }
+    }
+    namespace application {
+      namespace form {
+        class WithdrawApplicationForm {
+          + {static} Either<String, WithdrawApplication> bind(String)
+        }
+      }
+      class WithdrawApplicationApi {
+        + Either<String, Unit> apply(String)
+      }
+    }
+    api.withdraw.confirmation.WithdrawalConfirmApplicationApi -up-> api.withdraw.confirmation.form.WithdrawalConfirmApplicationForm
+    api.withdraw.application.WithdrawApplicationApi -up-> api.withdraw.application.form.WithdrawApplicationForm
+  }
+}
+
+namespace service {
+  class WithdrawalConfirmApplicationService {
+    + Either<RejectReason, WithdrawUser> apply(WithdrawalConfirmApplication)
+  }
+  class WithdrawApplicationService {
+    + WithdrawUser apply(WithdrawApplication)
+  }
+}
+api.withdraw.confirmation.WithdrawalConfirmApplicationApi -down-> service.WithdrawalConfirmApplicationService
+api.withdraw.application.WithdrawApplicationApi -down-> service.WithdrawalConfirmApplicationService
+api.withdraw.application.WithdrawApplicationApi -down-> service.WithdrawApplicationService
+
+@enduml

@@ -1,0 +1,53 @@
+@startuml
+
+package withdraw {
+  package confirmation {
+    class WithdrawalConfirmApplication {
+      - UserId
+    }
+  }
+  package application {
+    class WithdrawApplication {
+      - UserId
+      + WithdrawalConfirmApplication asConfirmApplication()
+    }
+    WithdrawApplication --> WithdrawalConfirmApplication
+    class WithdrawApplicationDateTime {
+      - LocalDateTime
+    }
+    class WithdrawApplicablePolicy {
+      + {static] Either[RejectReason, Unit] check(() => Option[WithdrawnUser])
+    }
+  }
+  package user {
+    class WithdrawUser<<UserEntity>> {
+      - UserId
+      - UserName
+      - Address
+      - BirthDate
+      - MailAddress
+      - AdmitApplicationDateTime
+      + WithdrawnUser apply(now)
+    }
+    class WithdrawnUser<<UserEntity>> {
+      - UserId
+      - WithdrawApplicationDateTime
+    }
+    interface WithdrawUserRepository {
+      + WithdrawUser findWithdraw(UserId)
+      + withdraw(WithdrawnUser)
+      + Option[WithdrawnUser] findWithdrawn(UserId)
+    }
+    WithdrawUser --> WithdrawnUser
+    WithdrawUserRepository --> WithdrawnUser
+    WithdrawUserRepository -> WithdrawUser
+  }
+  package error {
+    enum RejectReason {
+      AlreadyWithdrawn
+    }
+  }
+  WithdrawApplicablePolicy --> RejectReason
+}
+
+@enduml
