@@ -1,0 +1,102 @@
+@startuml
+
+namespace core {
+  namespace domain {
+    namespace credit_card {
+      class CreditCardNumber
+    }
+    namespace user {
+      class UserName
+    }
+  }
+  namespace form {
+    class CreditCardNumberForm
+
+    class UserNameForm
+  }
+}
+
+core.form.CreditCardNumberForm --> core.domain.credit_card.CreditCardNumber
+core.form.UserNameForm --> core.domain.user.UserName
+
+namespace entry {
+  namespace api {
+    class EntryApplicationApi {
+      String entry(String...)
+    }
+    class EntryCheckApplicationApi {
+      String entryCheck(String...)
+    }
+    class EntryApplicationForm
+    class EntryCheckApplicationForm
+    EntryApplicationApi --> EntryApplicationForm
+    EntryCheckApplicationApi --> EntryCheckApplicationForm
+    EntryApplicationApi -[hidden]down-> EntryCheckApplicationApi
+  }
+  namespace service {
+    class EntryApplicationService {
+      Try[UserId] entry(EntryApplication)
+    }
+    class EntryCheckApplicationService {
+      EitherT[Try, EntryCheckError, Unit] entryCheck(EntryCheckApplication)
+    }
+  }
+  namespace domain {
+    class EntryApplication {
+      - UserName
+      - UserGender
+      - CreditCardNumber
+      + EntryCheckApplication forCheck()
+      + EntryUserApplication forUser()
+      + EntryCreditCardApplication forCreditCard()
+    }
+    class EntryUserApplication {
+      - UserName
+      - UserGender
+    }
+    class EntryCreditCardApplication {
+      - CreditCardNumber
+    }
+    class EntryCheckApplication {
+      - UserName
+      - CreditCardNumber
+    }
+    EntryApplication --> EntryUserApplication
+    EntryApplication --> EntryCreditCardApplication
+    EntryApplication -up-> EntryCheckApplication
+
+    enum EntryCheckError
+
+    interface EntryApplicationUserRepository {
+      + Try[Boolean] exists(UserName)
+      + Try[UserId] entry(EntryUserApplication)
+    }
+    interface EntryApplicationCreditCardRepository {
+      + Try[Boolean] isValid(CreditCardNumber)
+      + Try[Unit] entry(UserId, EntryCreditCardApplication)
+    }
+
+    class EntryCheckPolicy {
+      + Either[EntryCheckError, Unit] check(Boolean, UserBirthDate, Boolean)
+    }
+
+    EntryCheckPolicy --> EntryCheckError
+  }
+}
+entry.service.EntryApplicationService --> entry.domain.EntryApplicationUserRepository
+entry.service.EntryApplicationService --> entry.domain.EntryApplicationCreditCardRepository
+entry.service.EntryCheckApplicationService --> entry.domain.EntryApplicationUserRepository
+entry.service.EntryCheckApplicationService --> entry.domain.EntryApplicationCreditCardRepository
+entry.service.EntryCheckApplicationService --> entry.domain.EntryCheckPolicy
+entry.service.EntryCheckApplicationService --> entry.domain.EntryCheckApplication
+
+entry.api.EntryApplicationForm -left-> core.form.CreditCardNumberForm
+entry.api.EntryApplicationForm -left-> core.form.UserNameForm
+entry.api.EntryApplicationForm --> entry.domain.EntryApplication
+entry.api.EntryCheckApplicationForm --> entry.domain.EntryCheckApplication
+
+entry.api.EntryApplicationApi -down-> entry.service.EntryApplicationService
+entry.api.EntryApplicationApi -down-> entry.service.EntryCheckApplicationService
+entry.api.EntryCheckApplicationApi -down-> entry.service.EntryCheckApplicationService
+
+@enduml
